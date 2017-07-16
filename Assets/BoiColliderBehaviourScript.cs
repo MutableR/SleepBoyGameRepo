@@ -6,35 +6,33 @@ using System.Linq;
 public class BoiColliderBehaviourScript : MonoBehaviour {
 
 
-    [SerializeField]
     private float speed = 3.0F;
-    [SerializeField]
-    private float jumpForce = 0.1F;
-
-    private bool isGrounded = false;
-
+    private float jumpForce = 5F;
+    
     new private Rigidbody2D rigidbody;
     private SpriteRenderer sprite;
     private Collider2D colider;
-    private bool IsGrounded;
+    private bool IsGrounded = false;
+    private Collider2D FloorCollider;
 
     void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();
         sprite = GetComponentInChildren < SpriteRenderer>();
         colider = GetComponent<Collider2D>();
+        FloorCollider = GameObject.Find("Floor").GetComponent<Collider2D>();
     }
     
     void Update()
     {
-        IsGrounded =  FloorTouching();
+        IsGrounded = FloorTouching();
         if (Input.GetButton("Horizontal")) Run();
-        if (isGrounded && Input.GetButtonDown("Jump")) Jump();
+        if (IsGrounded && Input.GetButtonDown("Jump")) Jump();
     }
 
     bool FloorTouching()
     {
-        return false;
+        return colider.IsTouching(FloorCollider);
     }
 
     private void Run()
@@ -45,6 +43,7 @@ public class BoiColliderBehaviourScript : MonoBehaviour {
 
     private void Jump()
     {
+        Debug.Log("Jump");
         rigidbody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
     }
     
